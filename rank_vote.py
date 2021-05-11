@@ -77,9 +77,10 @@ def ballot_info(ballots):
 
 # step 1
 # get ballots
-BALLOTS = get_ballots('votes_milly_30.csv')
+# BALLOTS = get_ballots('votes_milly_30.csv')
+BALLOTS = get_ballots('oes_pres_votes_2021.csv')
 NUM_BALLOTS = len(BALLOTS)
-SEATS = 2
+SEATS = 3
 QUOTA = droop_quota(NUM_BALLOTS, SEATS)
 WINNERS = []
 print(f"There are {NUM_BALLOTS} valid ballots cast.")
@@ -111,12 +112,13 @@ while len(WINNERS) < SEATS:
             surplus_pct = surplus_votes/QUOTA
             print(f'{surplus_pct:.2f} of each {candidate} vote will go to second choices for those ballots.')
             BALLOTS = remove_candidate(BALLOTS,candidate,surplus_pct)
+
     else:
         # step 4
         # if no winners, remove those that are lowest on tally
         # report out
         losers = find_loser(tally)
-
+ 
         # check to see if race is over
         if len(WINNERS) + (len(tally)-len(losers)) < SEATS:
             # print("Check Tally for Final Result")
