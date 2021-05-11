@@ -42,7 +42,7 @@ def find_winner(tally, quota):
             winners.append(candidate)
     return winners
 
-def remove_candidate(ballots, candidate, surplus_pct = 1):
+def remove_candidate(ballots, candidate, surplus_pct = 1, winners = []):
     '''This goes through the ballots
     removes the candidate and gives any votes for
     that candidate to next candidate in list
@@ -53,15 +53,26 @@ def remove_candidate(ballots, candidate, surplus_pct = 1):
     for ballot in ballots:
 
         if ballot[0][0] != candidate:
+            # first choice is not the candidate being deleted
+            # so first vote of ballot remains the same
             new_ballot = [ballot[0]]
         else:
+            # first choice of this ballot IS being deleted
+            # so update remaining vote to vote*surplus_pct
             ballot[0][1] *= surplus_pct
             new_ballot = []
+            if surplus_pct == 0:
+                # skip to next ballot if the candidate being removed has NO surplus to give
+                # this effectively removes this ballot from all ballots
+                continue
 
         if len(ballot)>1:
-            new_ballot +=[c for c in ballot[1:] if c[0] != candidate]
+            # if more choices still exist, remove candidate from that list
+            # new_ballot += [c for c in ballot[1:] if c[0] != candidate]
+            new_ballot += [c for c in ballot[1:] if c[0] != candidate and c[0] not in winners]
 
-        if len(new_ballot)>0 and surplus_pct>0:
+        # if len(new_ballot)>0 and surplus_pct>0:
+        if len(new_ballot)>0:
             new_ballot[0][1] = ballot[0][1]
             new_ballots.append(new_ballot)
 
@@ -80,7 +91,7 @@ def ballot_info(ballots):
 # BALLOTS = get_ballots('votes_milly_30.csv')
 BALLOTS = get_ballots('oes_pres_votes_2021.csv')
 NUM_BALLOTS = len(BALLOTS)
-SEATS = 3
+SEATS = 6
 QUOTA = droop_quota(NUM_BALLOTS, SEATS)
 WINNERS = []
 print(f"There are {NUM_BALLOTS} valid ballots cast.")
@@ -109,9 +120,9 @@ while len(WINNERS) < SEATS:
             print(f"*** {candidate} is a WINNER ***")
             surplus_votes = tally[candidate]-QUOTA
             print(f"{candidate} has {surplus_votes} surplus votes")
-            surplus_pct = surplus_votes/QUOTA
+            surplus_pct = 1-QUOTA/tally[candidate]
             print(f'{surplus_pct:.2f} of each {candidate} vote will go to second choices for those ballots.')
-            BALLOTS = remove_candidate(BALLOTS,candidate,surplus_pct)
+            BALLOTS = remove_candidate(BALLOTS, candidate,surplus_pct, winners)
 
     else:
         # step 4
