@@ -88,10 +88,10 @@ def ballot_info(ballots):
 
 # step 1
 # get ballots
-BALLOTS = get_ballots('votes_milly_30.csv')
+BALLOTS = get_ballots('oes_pres_votes_2021_anon.csv')
 # BALLOTS = get_ballots('oes_pres_votes_2021.csv')
 NUM_BALLOTS = len(BALLOTS)
-SEATS = 2
+SEATS = 1
 QUOTA = droop_quota(NUM_BALLOTS, SEATS)
 WINNERS = []
 print(f"There are {NUM_BALLOTS} valid ballots cast.")
