@@ -88,12 +88,16 @@ def ballot_info(ballots):
 
 # step 1
 # get ballots
-BALLOTS = get_ballots('oes_pres_votes_2021_anon.csv')
+#file_name = 'policyboard_11_2.csv'
+file_name = 'frances_oes_pres_votes_2021.csv'
+BALLOTS = get_ballots(file_name)
 # BALLOTS = get_ballots('oes_pres_votes_2021.csv')
 NUM_BALLOTS = len(BALLOTS)
-SEATS = 1
+SEATS = 3
 QUOTA = droop_quota(NUM_BALLOTS, SEATS)
 WINNERS = []
+print(file_name)
+
 print(f"There are {NUM_BALLOTS} valid ballots cast.")
 print(f"{QUOTA} votes are required to be elected to 1 of {SEATS} seats")
 
